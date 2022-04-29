@@ -96,6 +96,25 @@
       <!-- end Education -->
       {% endif %}
 
+      {% if site.resume_section_projects %}
+      <!-- begin Publications -->
+      <section class="content-section">
+        <header class="section-header">
+          <h2>Publications and Conferences</h2>
+        </header>
+
+        {% for project in site.data.projects %}
+        <div class="resume-item" itemscope itemtype="http://schema.org/CreativeWork">
+          <meta itemprop="creator" content="{{ site.resume_name }}" itemtype="http://schema.org/Person" />
+          <h3 class="resume-item-title" itemprop="name">{% if publication.url %}<a href="{{ project.url }}" itemprop="url">{{ publication.project }}</a>{% else %}{{ publication.project }}{% endif %}</h3>
+          <h4 class="resume-item-details" itemprop="description">{{ publication.publisher }}  &bull; {{ publication.duration }}</h4>
+          <p class="resume-item-copy">{{ publication.description }}</p>
+        </div>
+        {% endfor %}
+
+      </section>
+      <!-- end Publications -->
+      {% endif %}
 
       {% if site.resume_section_projects %}
       <!-- begin Projects -->
@@ -230,11 +249,6 @@
       </section>
       <!-- end Print Social Links -->
       {% endif %}
-
-      <footer class="page-footer">
-        <p class="footer-line">Made by <a href="http://twitter.com/jglovier">@jglovier</a>. Fork me on <a href="https://github.com/jglovier/resume-template">GitHub</a>.</p>
-        <p class="footer-line">If this is your live resume, you can modify or remove this part. ;-)</p>
-      </footer>
 
     </div>
 
