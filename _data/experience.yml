@@ -1,8 +1,13 @@
 # Jobs
+- company: elematic
+  position: Author and Maintainer
+  duration: 2024 &mdash; Present
+  summary: I am developing free and open source Python software for managing materials information based on the MatML schema formulated by NIST. This project is available at https://github.com/nogula/elematic/.
+
 - company: Firefly Aerospace
   position: Materials and Process Engineer
   duration: June 2022 &mdash; Present
-  summary: I am responsible for developing advanced manufacturing technologies and applying them to Firefly's products, ranging from additive manufacturing to innovative forming processes, all with high performance materials.  
+  summary: I lead materials and processes engineering for Firefly's rocket engine product lines. I establish the technical strategy for manufacturing the engines, along with quality provisions and requirements compliance. My day-to-day involves developing additive manufacturing, welding, casting, forging, and other wrought processes which utilize steel, nickel, aluminum, titanium, and copper alloys.
 
 - company: Center for Design and Manufacturing Excellence, OSU
   position: Graduate Research Associate
@@ -12,27 +17,27 @@
 - company: Department of Mechanical and Aerospace Engineering, OSU
   position: Graduate Teaching Associate
   duration: August 2020 &mdash; May 2022
-  summary: I was responsible for aiding students in the design and execution of experiments for their senior design capstone course – a project-based research experience. As part of my duties, I helped the students select an appropriate instrumentation setup and teach the basics of data analysis and best practices for performing experiments.
+  summary: I was responsible for aiding students in the design and execution of experiments for their senior design capstone course &mdash; a project-based research experience. As part of my duties, I helped the students select an appropriate instrumentation setup and teach the basics of data analysis and best practices for performing experiments.
 
 - company: Battelle Center for Science, Engineering, and Public Policy, OSU
   position: Research Associate
   duration: November 2018 &mdash; May 2022
-  summary: In this role, I performed strategic policy analyses and stakeholder landscape investigations on challenges facing America’s hypersonic workforce development, through a federal grant awarded to the Center by the Naval Surface Warfare Center, Crane Division. The sponsoring organization adopted several of our policy recommendations. Previously, I formed and led a team in the design of a novel pressurization system for spacecraft and launch vehicles. I presented and published this work at the International Astronautical Congress, and at the AIAA Region III Student Conference. This work has now transitioned into a capstone project for the senior aerospace research design course.
+  summary: In this role, I performed strategic policy analyses and stakeholder landscape investigations on challenges facing America's hypersonic workforce development, through a federal grant awarded to the Center by the Naval Surface Warfare Center, Crane Division. The sponsoring organization adopted several of our policy recommendations. Previously, I formed and led a team in the design of a novel pressurization system for spacecraft and launch vehicles. I presented and published this work at the International Astronautical Congress, and at the AIAA Region III Student Conference. This work has now transitioned into a capstone project for the senior aerospace research design course.
 
 - company: Firefly Aerospace
   position: Propulsion Research
   duration: May 2020 &mdash; August 2020
-  summary: In this role, I led the initial design of the next generation second stage engine for the Alpha launch vehicle. This kerolox, tap-off cycle engine utilizes generative design principles and advanced manufacturing techniques to achieve pump-fed performance with the simplicity of a pressure-fed cycle. My responsibilities included defining and managing the system’s functional requirements, establishing innovative manufacturing methods, and performing analysis related to the combustion performance of the proprietary injector design.
+  summary: In this role, I led the initial design of the next generation second stage engine for the Firefly Alpha launch vehicle. This kerolox, tap-off cycle engine utilizes generative design principles and advanced manufacturing techniques to achieve pump-fed performance with the simplicity of a pressure-fed cycle. My responsibilities included defining and managing the system's functional requirements, establishing innovative manufacturing methods, and performing analysis related to the combustion performance of the proprietary injector design.
 
 - company: Firefly Aerospace
   position: Propulsion Engineering Intern
   duration: May 2019 &mdash; August 2019
-  summary: During this internship, I served as the responsible engineer for Alpha’s first stage engine fluid systems. I performed a range of tasks including the design of propulsion components, development of work instructions, assembly of the engine, and created, performed, and analyzed test plans for fluid components.
+  summary: During this internship, I served as the responsible engineer for the Firefly Alpha rocket's first stage engine fluid systems. I performed a range of tasks including the design of propulsion components, development of work instructions, assembly of the engine, and created, performed, and analyzed test plans for fluid components.
 
 - company: Turbine Aerothermodynamics Lab, OSU
   position: Undergraduate Research Associate
   duration: August 2019 &mdash; April 2020
-  summary: As a research assistant, I used particle shadow velocimetry to characterize the evolution of dust deposits in conditions similar to the internal cooling passages of a gas turbine engine. I also developed MATLAB code to quickly process, analyze, and interpret results from experiments performed at the lab’s Coefficient of Restitution facility.
+  summary: As a research assistant, I used particle shadow velocimetry to characterize the evolution of dust deposits in conditions similar to the internal cooling passages of a gas turbine engine. I also developed MATLAB code to quickly process, analyze, and interpret results from experiments performed at the lab's Coefficient of Restitution facility.
 
 - company: Cleveland Electric Lab
   position: Design Engineer
@@ -42,17 +47,17 @@
 - company: Firefly Aerospace
   position: Design Engineering Intern
   duration: May 2018  &mdash; August 2018
-  summary: During my first internship with Firefly, I was a member of the design and analysis team and was able to contribute to tasks ranging from the design of composite structures to the assembly and integration of Firefly’s first ever second stage development vehicle, thanks in part to the small size of the company at the time (less than one hundred employees).
+  summary: During my first internship with Firefly, I was a member of the design and analysis team and was able to contribute to tasks ranging from the design of composite structures to the assembly and integration of Firefly's first ever second stage development vehicle, thanks in part to the small size of the company at the time (fewer than one hundred employees).
 
 - company: Buckeye Space Launch Initiative
   position: Propulsion and Structures Group
   duration: August 2017 &mdash; May 2018
-  summary: I worked on the 2017 30,000 ft competition rocket where I modeled components, performed carbon fiber and fiberglass lay-ups and designed a custom integration tool for installing the different bulk heads.
+  summary: I worked on the 2017 BSLI 30,000 ft competition rocket where I modeled components, performed carbon fiber and fiberglass lay-ups, and designed a custom integration tool for installing bulk heads.
 
 - company: Cleveland Electric Labs
   position: Engineering Intern
   duration: May 2017 &mdash; May 2018
-  summary: I was responsible for drafting all customer drawings and created and implemented formal drafting conventions and guidelines. In addition, I performed duties in the certification and calibration laboratory.
+  summary: I was responsible for drafting all customer drawings and created and implemented formal drafting conventions and guidelines. In addition, I worked in the certification and calibration laboratory.
 
 - company: Discovery Lab, Air Force Research Lab
   position: Research Intern
