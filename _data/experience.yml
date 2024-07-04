@@ -1,4 +1,9 @@
 # Jobs
+- company: Firefly Aerospace
+  position: Propulsion Engineer
+  duration: July 2024 &mdash; Present
+  summary: I work on our in-space propulsion systems, namely hypergolic reaction control thrusters.
+
 - company: elematic
   position: Author and Maintainer
   duration: 2024 &mdash; Present
@@ -6,20 +11,20 @@
 
 - company: Firefly Aerospace
   position: Materials and Process Engineer
-  duration: June 2022 &mdash; Present
-  summary: I lead materials and processes engineering for Firefly's rocket engine product lines. I establish the technical strategy for manufacturing the engines, along with quality provisions and requirements compliance. My day-to-day involves developing additive manufacturing, welding, casting, forging, and other wrought processes which utilize steel, nickel, aluminum, titanium, and copper alloys.
+  duration: June 2022 &mdash; June 2024
+  summary: I led materials and processes engineering for Firefly's rocket engine product lines which essentially meant translating drawings into "something that would hurt your toe if you dropped it." This involved writing material specifications, supplier development, failure analyses, material studies, and process development across a wide range of materials.
 
-- company: Center for Design and Manufacturing Excellence, OSU
+- company: Center for Design and Manufacturing Excellence
   position: Graduate Research Associate
   duration: Febrauary 2021 &mdash; May 2022
   summary: At the CDME, I had a variety of responsibilities ranging from operating our laser powder bed fusion (L-PBF) additive manufacturing (AM) machines (including design, machine preparation, operation, unpacking, and post processing activities such as powder removal, wire-EDM, and media blasting), to performing L-PBF AM research (such as real-time in-situ monitoring, parameter development for new materials, etc.), and managing the day-to-day operations of the CDME's metal AM facility (which includes machines from eight different OEM's, a wire-EDM, and support equipment (vacuums, sieves, etc.)).
 
-- company: Department of Mechanical and Aerospace Engineering, OSU
+- company: Department of Mechanical and Aerospace Engineering
   position: Graduate Teaching Associate
   duration: August 2020 &mdash; May 2022
   summary: I was responsible for aiding students in the design and execution of experiments for their senior design capstone course &mdash; a project-based research experience. As part of my duties, I helped the students select an appropriate instrumentation setup and teach the basics of data analysis and best practices for performing experiments.
 
-- company: Battelle Center for Science, Engineering, and Public Policy, OSU
+- company: Battelle Center for Science, Engineering, and Public Policy
   position: Research Associate
   duration: November 2018 &mdash; May 2022
   summary: In this role, I performed strategic policy analyses and stakeholder landscape investigations on challenges facing America's hypersonic workforce development, through a federal grant awarded to the Center by the Naval Surface Warfare Center, Crane Division. The sponsoring organization adopted several of our policy recommendations. Previously, I formed and led a team in the design of a novel pressurization system for spacecraft and launch vehicles. I presented and published this work at the International Astronautical Congress, and at the AIAA Region III Student Conference. This work has now transitioned into a capstone project for the senior aerospace research design course.
@@ -34,12 +39,12 @@
   duration: May 2019 &mdash; August 2019
   summary: During this internship, I served as the responsible engineer for the Firefly Alpha rocket's first stage engine fluid systems. I performed a range of tasks including the design of propulsion components, development of work instructions, assembly of the engine, and created, performed, and analyzed test plans for fluid components.
 
-- company: Turbine Aerothermodynamics Lab, OSU
+- company: Turbine Aerothermodynamics Lab
   position: Undergraduate Research Associate
   duration: August 2019 &mdash; April 2020
   summary: As a research assistant, I used particle shadow velocimetry to characterize the evolution of dust deposits in conditions similar to the internal cooling passages of a gas turbine engine. I also developed MATLAB code to quickly process, analyze, and interpret results from experiments performed at the lab's Coefficient of Restitution facility.
 
-- company: Cleveland Electric Lab
+- company: Cleveland Electric Laboratories
   position: Design Engineer
   duration: September 2018 &mdash; May 2019
   summary: In this role, I designed and analyzed two production bake ovens/furnaces which required collaboration and interface with multiple departments. I was also responsible for managing CAD documents and drawings for the company.
@@ -54,12 +59,12 @@
   duration: August 2017 &mdash; May 2018
   summary: I worked on the 2017 BSLI 30,000 ft competition rocket where I modeled components, performed carbon fiber and fiberglass lay-ups, and designed a custom integration tool for installing bulk heads.
 
-- company: Cleveland Electric Labs
+- company: Cleveland Electric Laboratories
   position: Engineering Intern
   duration: May 2017 &mdash; May 2018
   summary: I was responsible for drafting all customer drawings and created and implemented formal drafting conventions and guidelines. In addition, I worked in the certification and calibration laboratory.
 
-- company: Discovery Lab, Air Force Research Lab
+- company: Discovery Lab, Air Force Research Laboratory
   position: Research Intern
   duration: May 2015 &mdash; August 2015
   summary: I served as a member of Cyber Team 6, under Dr. Rob Williams, and researched network penetration techniques.

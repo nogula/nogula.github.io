@@ -11,7 +11,7 @@ sass:
 # Resume settings
 resume_avatar:                  "true"
 resume_name:                    "Noah Gula"
-resume_title:                   "Materials and Processes Engineer at Firefly Aerospace"
+resume_title:                   "Propulsion Engineer"
 
 # used for the contact button in _layouts/resume.html
 resume_contact_email:           "noahrgula+web@gmail.com"
@@ -23,7 +23,7 @@ resume_contact_address:         "Austin, TX"
 resume_header_contact_info:     "Austin, TX"
 display_header_contact_info:    "true"
 
-resume_header_intro: "<p>I am an aerospace engineer turned materials and processes engineer with expertise expertise on rocket propulsion and its associated materials and manufacturing methods. I get fired up by working on rapid-prototyping projects involving advanced manufacturing, aerospace engineering, and opportunities for commercialization. Beyond that, I have keen interests of the intersection between engineering & public policy, and have thoroughly enjoyed my experiences teaching and mentoring students.</p>"
+resume_header_intro: "I am an aerospace engineer turned materials engineer turned back to a propulsion engineer. I work with hyergolic in-space propulsion systems and keep myself busy developing open source Python software. I get fired up about projects that demand extreme technical competency and a good eye for design. I am always on the lookout for the next opportunity to challenge me!"
 
 # use "yes" to display the email contact button,
 # "no" to display an "I'm not looking for work" message,
