@@ -1,218 +1,625 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>Moon Landing Simulator 2k26</title>
-		<style>
-html, body, #canvas {
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+	<title>Moon Landing Simulator 2k26</title>
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #000000;
+			color: #cccccc;
+			overflow: hidden;
+			font-family: 'Courier New', 'Lucida Console', Monaco, monospace;
+			user-select: none;
+			-webkit-user-select: none;
+		}
 
-body {
-	color: white;
-	background-color: black;
-	overflow: hidden;
-	touch-action: none;
-}
+		#canvas {
+			display: block;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+		}
 
-#canvas {
-	display: block;
-}
+		#canvas:focus {
+			outline: none;
+		}
 
-#canvas:focus {
-	outline: none;
-}
+		/* Retro CRT Screen Container */
+		#dos-terminal {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #030705;
+			color: #c4c8c5;
+			z-index: 100;
+			display: flex;
+			flex-direction: column;
+			box-sizing: border-box;
+			padding: 16px 24px 10px 24px;
+			overflow: hidden;
+			box-shadow: inset 0 0 130px rgba(0, 0, 0, 0.96), inset 0 0 45px rgba(0, 25, 12, 0.45);
+			transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+		}
 
-#status, #status-splash, #status-progress {
-	position: absolute;
-	left: 0;
-	right: 0;
-}
+		/* CRT Scanline & Phosphor Glow Overlay */
+		#dos-terminal::before {
+			content: " ";
+			display: block;
+			position: absolute;
+			top: 0; left: 0; bottom: 0; right: 0;
+			background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.30) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.025), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.025));
+			z-index: 10;
+			background-size: 100% 2px, 3px 100%;
+			pointer-events: none;
+		}
 
-#status, #status-splash {
-	top: 0;
-	bottom: 0;
-}
+		#dos-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			border-bottom: 2px solid #444444;
+			padding-bottom: 8px;
+			margin-bottom: 8px;
+			flex-shrink: 0;
+		}
 
-#status {
-	background-color: #242424;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-}
+		#dos-header-left {
+			line-height: 1.4;
+			font-size: 13.5px;
+		}
 
-#status-splash {
-	max-height: 100%;
-	max-width: 100%;
-	margin: auto;
-}
+		#dos-energy-star {
+			font-family: monospace;
+			font-size: 9px;
+			line-height: 1.05;
+			color: #00ddff;
+			white-space: pre;
+			text-align: right;
+			border: 1px solid #00aaee;
+			padding: 5px 8px;
+			background: #02121d;
+			box-shadow: 0 0 10px rgba(0, 170, 238, 0.35);
+		}
 
-#status-splash.show-image--false {
-	display: none;
-}
+		#dos-audio-banner {
+			color: #ffff55;
+			background: rgba(45, 45, 12, 0.7);
+			border: 1px dashed #aaaa33;
+			padding: 5px 12px;
+			margin-bottom: 8px;
+			font-size: 12.5px;
+			cursor: pointer;
+			display: inline-block;
+			flex-shrink: 0;
+			transition: background 0.2s, color 0.2s;
+		}
 
-#status-splash.fullsize--true {
-	height: 100%;
-	width: 100%;
-	object-fit: contain;
-}
+		#dos-audio-banner:hover {
+			background: rgba(70, 70, 20, 0.9);
+			color: #ffffff;
+		}
 
-#status-splash.use-filter--false {
-	image-rendering: pixelated;
-}
+		#dos-log {
+			flex: 1;
+			font-size: 13px;
+			line-height: 1.45;
+			white-space: pre-wrap;
+			word-break: break-all;
+			overflow-y: auto;
+			scrollbar-width: none;
+			-ms-overflow-style: none;
+			color: #c4c8c5;
+			text-shadow: 0 0 2px rgba(180, 240, 190, 0.25);
+		}
 
-#status-progress, #status-notice {
-	display: none;
-}
+		#dos-log::-webkit-scrollbar {
+			display: none;
+		}
 
-#status-progress {
-	bottom: 10%;
-	width: 50%;
-	margin: 0 auto;
-}
+		#dos-footer {
+			border-top: 1px solid #333333;
+			padding-top: 6px;
+			margin-top: 4px;
+			font-size: 12px;
+			color: #777777;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-shrink: 0;
+		}
 
-#status-notice {
-	background-color: #5b3943;
-	border-radius: 0.5rem;
-	border: 1px solid #9b3943;
-	color: #e0e0e0;
-	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
-	line-height: 1.3;
-	margin: 0 2rem;
-	overflow: hidden;
-	padding: 1rem;
-	text-align: center;
-	z-index: 1;
-}
-		</style>
-		
-	</head>
-	<body>
-		<canvas id="canvas">
-			Your browser does not support the canvas tag.
-		</canvas>
+		.dos-highlight {
+			color: #ffffff;
+			font-weight: bold;
+			text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+		}
 
-		<noscript>
-			Your browser does not support JavaScript.
-		</noscript>
+		.dos-cyan {
+			color: #00eeee;
+			text-shadow: 0 0 3px rgba(0, 238, 238, 0.35);
+		}
 
-		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
-			<progress id="status-progress"></progress>
-			<div id="status-notice"></div>
+		.dos-green {
+			color: #44ff44;
+			font-weight: bold;
+			text-shadow: 0 0 4px rgba(68, 255, 68, 0.4);
+		}
+
+		.dos-yellow {
+			color: #ffff55;
+			text-shadow: 0 0 3px rgba(255, 255, 85, 0.3);
+		}
+
+		.dos-red {
+			color: #ff5555;
+			font-weight: bold;
+			text-shadow: 0 0 4px rgba(255, 85, 85, 0.4);
+		}
+
+		.dos-dim {
+			color: #666666;
+		}
+
+		.dos-cursor {
+			display: inline-block;
+			width: 8px;
+			height: 14px;
+			background-color: #44ff44;
+			vertical-align: middle;
+			box-shadow: 0 0 6px #44ff44;
+			animation: dos-blink 0.75s steps(2, start) infinite;
+		}
+
+		@keyframes dos-blink {
+			0%, 100% { opacity: 1; }
+			50% { opacity: 0; }
+		}
+
+		/* CRT Screen Fade-out Collapse */
+		.crt-off {
+			opacity: 0 !important;
+			transform: scaleY(0.005) scaleX(1.1) !important;
+			filter: brightness(3.0);
+			pointer-events: none;
+		}
+	</style>
+	
+</head>
+<body>
+	<canvas id="canvas">
+		Your browser does not support the HTML5 canvas tag.
+	</canvas>
+
+	<!-- Retro MS-DOS / Award Modular BIOS Boot Terminal -->
+	<div id="dos-terminal">
+		<div id="dos-header">
+			<div id="dos-header-left">
+				<div class="dos-highlight">Award Modular BIOS v4.51PG, An Energy Star Ally</div>
+				<div>Copyright (C) 1984-96, Award Software, Inc.</div>
+				<div style="margin-top: 4px;" class="dos-cyan">LUNAR FLIGHT DIRECTORATE &bull; GNC TERMINAL v4.12</div>
+				<div>PENTIUM-S CPU at 133MHz with MMX(TM) Technology</div>
+			</div>
+			<div id="dos-energy-star">
+ ___  ____  ____ 
+|__  |__   |__/  EPA
+|___ |___  |  \  ENERGY STAR
+=================
+ LUNAR SIMULATOR
+			</div>
 		</div>
 
-		<script src="index.js"></script>
-		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":15685804,"index.wasm":37902138},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+		<div id="dos-audio-banner" onclick="unlockAudio(event)">
+			&#9654; Click anywhere or press any key for PC Speaker audio & interactive shell
+		</div>
+
+		<div id="dos-log"><span id="dos-output"></span><span class="dos-cursor" id="dos-cursor"></span></div>
+
+		<div id="dos-footer">
+			<span>Press <span class="dos-highlight">DEL</span> to enter SETUP &nbsp;|&nbsp; Press <span class="dos-highlight" style="cursor:pointer;" onclick="requestEarlySkip()">ESC</span> to skip to Windows 95</span>
+			<span class="dos-dim">02/21/96-i430VX-2A59CF08C-00</span>
+		</div>
+	</div>
+
+	<script src="index.js"></script>
+	<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":12383860,"index.wasm":37902138},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
+let audioUnlocked = false;
+let audioCtx = null;
+
+function unlockAudio(e) {
+	if (audioUnlocked) return;
+	audioUnlocked = true;
+	try {
+		const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+		if (AudioContextClass) {
+			if (!audioCtx) audioCtx = new AudioContextClass();
+			if (audioCtx.state === 'suspended') {
+				audioCtx.resume().catch(() => {});
+			}
+		}
+	} catch (err) {}
+
+	const banner = document.getElementById('dos-audio-banner');
+	if (banner) {
+		banner.innerHTML = "<span class='dos-green'>&#10003; PC SPEAKER ACTIVE &bull; TYPE COMMANDS (OR ESC TO SKIP)</span>";
+		setTimeout(() => {
+			if (banner) banner.style.display = 'none';
+		}, 2000);
+	}
+	playSpeaker(890, 0.09, 'square', 0.08);
+}
+
+function playSpeaker(freq, duration, type, vol) {
+	try {
+		if (!audioUnlocked || !audioCtx) return;
+		if (audioCtx.state === 'suspended') {
+			audioCtx.resume().catch(() => {});
+		}
+		const osc = audioCtx.createOscillator();
+		const gain = audioCtx.createGain();
+		osc.type = type || 'square';
+		osc.frequency.setValueAtTime(freq || 880, audioCtx.currentTime);
+		gain.gain.setValueAtTime(vol || 0.04, audioCtx.currentTime);
+		gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (duration || 0.05));
+		osc.connect(gain);
+		gain.connect(audioCtx.destination);
+		osc.start();
+		osc.stop(audioCtx.currentTime + (duration || 0.05));
+	} catch (e) {}
+}
+
+function playKeyClick() {
+	playSpeaker(160 + Math.random() * 80, 0.012, 'sine', 0.03);
+}
+
+function playSeekSound() {
+	playSpeaker(90 + Math.random() * 40, 0.015, 'sawtooth', 0.04);
+}
+
+let requestEarlySkip = function() {};
+
 (function () {
-	const statusOverlay = document.getElementById('status');
-	const statusProgress = document.getElementById('status-progress');
-	const statusNotice = document.getElementById('status-notice');
+	const terminal = document.getElementById('dos-terminal');
+	const logBox = document.getElementById('dos-log');
+	const output = document.getElementById('dos-output');
+	const cursor = document.getElementById('dos-cursor');
 
-	let initializing = true;
-	let statusMode = '';
+	let memoryTestDone = false;
+	let dosSequenceStarted = false;
+	let engineIsLoaded = false;
+	let bootSequenceFinished = false;
+	let transitioning = false;
+	let interactiveInput = "";
 
-	function setStatusMode(mode) {
-		if (statusMode === mode || !initializing) {
-			return;
-		}
-		if (mode === 'hidden') {
-			statusOverlay.remove();
-			initializing = false;
-			return;
-		}
-		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
-		statusMode = mode;
+	window.addEventListener('click', (e) => {
+		unlockAudio(e);
+	});
+
+	function scrollToBottom() {
+		logBox.scrollTop = logBox.scrollHeight;
 	}
 
-	function setStatusNotice(text) {
-		while (statusNotice.lastChild) {
-			statusNotice.removeChild(statusNotice.lastChild);
-		}
-		const lines = text.split('\n');
-		lines.forEach((line) => {
-			statusNotice.appendChild(document.createTextNode(line));
-			statusNotice.appendChild(document.createElement('br'));
-		});
+	function appendHtml(html) {
+		output.innerHTML += html;
+		scrollToBottom();
 	}
 
-	function displayFailureNotice(err) {
-		console.error(err);
-		if (err instanceof Error) {
-			setStatusNotice(err.message);
-		} else if (typeof err === 'string') {
-			setStatusNotice(err);
+	function appendLine(html) {
+		output.innerHTML += html + "\n";
+		scrollToBottom();
+	}
+
+	function transitionToWindows95() {
+		if (transitioning) return;
+		if (!engineIsLoaded) {
+			appendLine("\n<span class='dos-yellow'>[WASM] Compiling flight engine in background... please wait.</span>");
+			return;
+		}
+		transitioning = true;
+		if (telemetryTimer) clearInterval(telemetryTimer);
+
+		appendLine("\nC:\\> <span class='dos-highlight'>WIN.COM</span>");
+		appendLine("<span class='dos-cyan'>Starting Windows 95...</span>");
+		appendLine("Loading Desktop Theme [Classic 95 Lunar Flight Directorate]...");
+		appendLine("<span class='dos-green'>[SYSTEM] Handing over control to Flight HUD...</span>");
+		cursor.style.display = "none";
+		setTimeout(() => {
+			terminal.classList.add('crt-off');
+			setTimeout(() => {
+				terminal.remove();
+			}, 450);
+		}, 550);
+	}
+
+	requestEarlySkip = function() {
+		if (engineIsLoaded) {
+			transitionToWindows95();
 		} else {
-			setStatusNotice('An unknown error occurred.');
+			appendLine("\n<span class='dos-yellow'>[SYSTEM] Flight binaries still loading...</span>");
 		}
-		setStatusMode('notice');
-		initializing = false;
+	};
+
+	// 1. Initial BIOS POST Memory Test
+	appendLine("Memory Test :  640K Base Memory OK");
+	appendLine("Extended Memory Testing :  <span id='mem-count'>1024K</span> OK");
+
+	let currentMemKb = 1024;
+	const memEl = document.getElementById('mem-count');
+
+	// Smooth memory count up to 52480K (takes ~1.2 seconds)
+	let memInterval = setInterval(() => {
+		if (memoryTestDone) return;
+		currentMemKb += 2048;
+		if (currentMemKb >= 52480) {
+			currentMemKb = 52480;
+			memoryTestDone = true;
+			clearInterval(memInterval);
+			if (memEl) memEl.textContent = "52480K";
+			startBootSequence();
+		} else {
+			if (memEl) memEl.textContent = currentMemKb + "K";
+			if (Math.random() < 0.25) playSeekSound();
+		}
+	}, 30);
+
+	function startBootSequence() {
+		if (dosSequenceStarted) return;
+		dosSequenceStarted = true;
+		playSpeaker(890, 0.08, 'square', 0.07);
+
+		const queue = [
+			{ delay: 100, fn: () => appendLine("<span class='dos-highlight'>Award Plug and Play BIOS Extension v1.0A</span>") },
+			{ delay: 80,  fn: () => appendLine("Initialize Plug and Play Cards... Complete.") },
+			{ delay: 90,  fn: () => appendLine("Detecting IDE Primary Master   ... <span class='dos-cyan'>QUANTUM FIREBALL TM1280A (1281MB, Mode 4)</span>") },
+			{ delay: 60,  fn: () => appendLine("Detecting IDE Primary Slave    ... NONE") },
+			{ delay: 70,  fn: () => appendLine("Detecting IDE Secondary Master ... <span class='dos-cyan'>MATSHITA CR-583 CD-ROM (4X ATAPI)</span>") },
+			{ delay: 60,  fn: () => appendLine("Detecting IDE Secondary Slave  ... NONE") },
+			{ delay: 90,  fn: () => {
+				playSeekSound();
+				appendLine("Drive A: Floppy drive 1.44M, 3.5 in. (track 0 seek ... <span class='dos-green'>OK</span>)");
+			}},
+			{ delay: 100, fn: () => {
+				appendLine("<span class='dos-dim'>+---+-----+------+-----------+-----------------------------------+-----+</span>");
+				appendLine("<span class='dos-dim'>|Bus| Dev | Func | Device ID | Device Class                      | IRQ |</span>");
+				appendLine("<span class='dos-dim'>+---+-----+------+-----------+-----------------------------------+-----+</span>");
+				appendLine("| 0 |  7  |  1   | 8086:7111 | Intel 82371AB PIIX4 IDE Controller|  14 |");
+				appendLine("| 0 |  9  |  0   | 5333:8811 | S3 Trio64V+ PCI Graphic Accel     |  11 |");
+				appendLine("| 0 | 11  |  0   | 10EC:8029 | Realtek RTL8029 Fast Ethernet     |  10 |");
+				appendLine("| 0 | 12  |  0   | 1274:1371 | Creative Ensoniq AudioPCI 16 DSP  |   5 |");
+				appendLine("| 0 | 14  |  0   | 1553:2026 | MIL-STD-1553B Dual Redundant Bus  |   9 |");
+				appendLine("<span class='dos-dim'>+---+-----+------+-----------+-----------------------------------+-----+</span>");
+			}},
+			{ delay: 140, fn: () => appendLine("\n<span class='dos-highlight'>Starting MS-DOS 7.0...</span>\n") },
+			{ delay: 90,  fn: () => appendLine("HIMEM: DOS XMS Driver, Version 3.10 - 09/30/95") },
+			{ delay: 60,  fn: () => appendLine("  64Kb High Memory Area (HMA) available: using HMA.") },
+			{ delay: 70,  fn: () => appendLine("EMM386 Expanded Memory Manager 4.49 (NOEMS mode)") },
+			{ delay: 60,  fn: () => appendLine("  High RAM region: C800-EFFF (160 KB available for UMB).") },
+			{ delay: 80,  fn: () => appendLine("DEVICEHIGH=C:\\DRIVERS\\CR_ATAPI.SYS /D:MSCD001") },
+			{ delay: 60,  fn: () => appendLine("  ATAPI CD-ROM driver: 1 unit attached. Drive D: created.") },
+			{ delay: 80,  fn: () => appendLine("DEVICEHIGH=C:\\AVIONICS\\MIL1553.SYS /PORT:0x340 /IRQ:9") },
+			{ delay: 60,  fn: () => appendLine("  MIL-STD-1553B GNC Bus Controller Driver v2.4 initialized.") },
+			{ delay: 100, fn: () => appendLine("\nC:\\> <span class='dos-yellow'>@ECHO OFF</span>") },
+			{ delay: 60,  fn: () => appendLine("C:\\> PROMPT $P$G") },
+			{ delay: 60,  fn: () => appendLine("C:\\> SET BLASTER=A220 I5 D1 H5 T6 P330") },
+			{ delay: 70,  fn: () => appendLine("C:\\> C:\\DOS\\SMARTDRV.EXE 2048 1024 /X") },
+			{ delay: 70,  fn: () => appendLine("C:\\> C:\\DOS\\MSCDEX.EXE /D:MSCD001 /L:D") },
+			{ delay: 50,  fn: () => appendLine("  MSCDEX Version 2.25: Drive D: = Driver MSCD001 unit 0") },
+			{ delay: 70,  fn: () => appendLine("C:\\> C:\\MOUSE\\CTMOUSE.EXE") },
+			{ delay: 50,  fn: () => appendLine("  CuteMouse v1.9.1: PS/2 Mouse detected at IRQ 12.") },
+			{ delay: 60,  fn: () => appendLine("C:\\> C:\\DOS\\DOSKEY.COM") },
+			{ delay: 50,  fn: () => appendLine("  DOSKey installed. Command history active.") },
+			{ delay: 90,  fn: () => appendLine("\nC:\\> <span class='dos-highlight'>CALL C:\\AVIONICS\\PREFLT.BAT --all --telemetry=DSN</span>") },
+			{ delay: 100, fn: () => appendLine("[PWR-BUS] Main DC Bus 1: 28.38V (Limit: 26.5 - 29.5V) ... <span class='dos-green'>[  NOMINAL  ]</span>") },
+			{ delay: 70,  fn: () => appendLine("[PWR-BUS] Backup DC Bus 2: 28.41V (Limit: 26.5 - 29.5V) ... <span class='dos-green'>[  NOMINAL  ]</span>") },
+			{ delay: 70,  fn: () => appendLine("[PWR-BUS] 48Ah Li-Ion Battery State of Charge: 98.6% (Cell Delta: 8mV)") },
+			{ delay: 100, fn: () => appendLine("[IMU-TEST] 3-Axis Fiber-Optic Gyro null-bias drift calibration:") },
+			{ delay: 60,  fn: () => appendLine("  GYRO-PITCH: +0.0014 deg/s (SPEC: +/- 0.050) ... <span class='dos-green'>[ PASS ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  GYRO-YAW  : -0.0008 deg/s (SPEC: +/- 0.050) ... <span class='dos-green'>[ PASS ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  GYRO-ROLL : +0.0003 deg/s (SPEC: +/- 0.050) ... <span class='dos-green'>[ PASS ]</span>") },
+			{ delay: 80,  fn: () => appendLine("[ACCEL-TRIAD] Quartz Flexure Accelerometer Vector Check:") },
+			{ delay: 60,  fn: () => appendLine("  Measured Gravity: [0.000, 0.000, 1.000] g ... <span class='dos-green'>RESIDUAL: 0.0001 g</span>") },
+			{ delay: 90,  fn: () => appendLine("[RCS-COILS] Reaction Control Thruster Solenoid Resistance Check:") },
+			{ delay: 50,  fn: () => appendLine("  STBD Pod (+Y) [4A, 4B] : 12.44 ohm | 12.48 ohm ... <span class='dos-green'>[ OK ]</span>") },
+			{ delay: 50,  fn: () => appendLine("  PORT Pod (-Y) [2A, 2B] : 12.51 ohm | 12.42 ohm ... <span class='dos-green'>[ OK ]</span>") },
+			{ delay: 50,  fn: () => appendLine("  AFT  Pod (+Z) [3A, 3B] : 12.46 ohm | 12.49 ohm ... <span class='dos-green'>[ OK ]</span>") },
+			{ delay: 50,  fn: () => appendLine("  FWD  Pod (-Z) [1A, 1B] : 12.40 ohm | 12.55 ohm ... <span class='dos-green'>[ OK ]</span>") },
+			{ delay: 90,  fn: () => appendLine("[PROP-SYS] Bipropellant MMH / MON-3 Helium Pressurization:") },
+			{ delay: 50,  fn: () => appendLine("  Fuel Tank Ullage    : 24.12 bar (Limit: 22-26 bar) ... <span class='dos-green'>[ STABLE ]</span>") },
+			{ delay: 50,  fn: () => appendLine("  Oxidizer Tank Ullage: 24.18 bar (Limit: 22-26 bar) ... <span class='dos-green'>[ STABLE ]</span>") },
+			{ delay: 50,  fn: () => appendLine("  Helium Storage Bottle: 211.4 bar (Limit: 200-220 bar) ... <span class='dos-green'>[ CHARGED ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  Main Descent Engine Dual Pyro Isolation Valves: <span class='dos-yellow'>ARMED</span>") },
+			{ delay: 90,  fn: () => appendLine("[LANDING-RADAR] FMCW 24-GHz Doppler Radar Sensor Self-Test:") },
+			{ delay: 60,  fn: () => appendLine("  Local Oscillator PLL lock: 24.150 GHz ... <span class='dos-green'>[ LOCKED ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  IF Receiver Noise Floor: -114.2 dBm ... <span class='dos-green'>[ NOISE MARGIN OK ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  Range Gate Acquisition Window: 0.5m to 2500m ... <span class='dos-green'>READY</span>") },
+			{ delay: 90,  fn: () => appendLine("[OPTICAL-FLOW] Descent Terrain Imager Auto-Gain Test:") },
+			{ delay: 60,  fn: () => appendLine("  Exposure Calibration: 1/120s @ f/2.8 ... <span class='dos-green'>[ CONTRAST LOCK ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  Feature Tracker: 128 regolith landmark keypoints locked") },
+			{ delay: 90,  fn: () => appendLine("[TOPOGRAPHY] Jolt 3D Procedural Lunar Terrain Engine:") },
+			{ delay: 60,  fn: () => appendLine("  Synthesizing impact craters & ejecta blanket rim distribution...") },
+			{ delay: 60,  fn: () => appendLine("  Triangulating 128x128 faceted low-poly surface & colliders: <span class='dos-green'>98,304 FACETS</span>") },
+			{ delay: 100, fn: () => appendLine("[TELEMETRY] Deep Space Network (DSN) Transponder Link:") },
+			{ delay: 60,  fn: () => appendLine("  Station 43 (Canberra, 70m) Tracking: AZ 214.2 deg | EL 44.8 deg") },
+			{ delay: 60,  fn: () => appendLine("  Uplink Carrier: 2114.8 MHz | Downlink: 2296.2 MHz (Phase-Lock: <span class='dos-green'>TRUE</span>)") },
+			{ delay: 60,  fn: () => appendLine("  Signal-to-Noise Ratio: +24.8 dB ... <span class='dos-green'>[ FRAME LOCK ESTABLISHED ]</span>") },
+			{ delay: 60,  fn: () => appendLine("  Bit Synchronizer: IN-SYNC (Bit Error Rate < 1e-8)") },
+			{ delay: 90,  fn: () => appendLine("<span class='dos-dim'>FRAME [0x01A0]: 4C 55 4E 41 52 2D 47 4E 43 20 44 41 54 41 00 28 ... CRC OK</span>") },
+			{ delay: 70,  fn: () => appendLine("<span class='dos-dim'>FRAME [0x01A1]: 7E 14 00 28 01 00 00 00 A4 12 00 00 FF FF 00 00 ... SYNC</span>") },
+			{ delay: 90,  fn: () => appendLine("[WASM-RUNTIME] WebAssembly 32-bit Virtual Machine:") },
+			{ delay: 60,  fn: () => appendLine("  Pre-compiling JIT bytecode instruction blocks...") },
+			{ delay: 60,  fn: () => appendLine("  Allocating 32MB linear heap memory... <span class='dos-green'>[ OK ]</span>") },
+			{ delay: 70,  fn: () => appendLine("Conventional Memory : 594 KB Free (640 KB Total)") },
+			{ delay: 50,  fn: () => appendLine("Extended Memory (XMS): 49,152 KB Available") },
+			{ delay: 50,  fn: () => appendLine("Largest Executable  : 593 KB") }
+		];
+
+		let idx = 0;
+		function runNext() {
+			if (transitioning) return;
+			if (idx < queue.length) {
+				const item = queue[idx];
+				idx++;
+				item.fn();
+				setTimeout(runNext, item.delay);
+			} else {
+				bootSequenceFinished = true;
+				if (engineIsLoaded) {
+					transitionToWindows95();
+				} else {
+					startTelemetryLoop();
+				}
+			}
+		}
+		runNext();
 	}
 
+	// Dynamic continuous telemetry loop while WASM is compiling
+	let telemetryTimer = null;
+	let cycleNum = 1042;
+	function startTelemetryLoop() {
+		if (telemetryTimer || transitioning) return;
+		telemetryTimer = setInterval(() => {
+			if (transitioning) {
+				clearInterval(telemetryTimer);
+				return;
+			}
+			cycleNum++;
+			const rtt = (2.560 + (Math.sin(cycleNum) * 0.008)).toFixed(3);
+			const snr = (24.5 + (Math.cos(cycleNum * 0.7) * 0.4)).toFixed(1);
+			const temp = (18.2 + (Math.sin(cycleNum * 0.3) * 0.6)).toFixed(1);
+			const randHex = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+
+			const telemetryMessages = [
+				`[DSN-BEACON] Frame #0x${randHex}: RTT: ${rtt}s | SNR: +${snr} dB | BER: <1e-8 ... <span class='dos-green'>[ OK ]</span>`,
+				`[GNC-FILTER] Nav cycle #${cycleNum}: Covariance trace P=0.00038 ... <span class='dos-green'>CONVERGED</span>`,
+				`[THERMAL-MON] Avionics: +${temp}&deg;C | Battery: +21.4&deg;C | Main Valve: +19.1&deg;C ... <span class='dos-green'>NOMINAL</span>`,
+				`[STAR-TRACKER] Sensor frame #${cycleNum}: 18 catalog stars matched ... <span class='dos-cyan'>RESIDUAL: 0.03 arcsec</span>`,
+				`<span class='dos-dim'>FRAME [0x${randHex}]: 01 A4 ${(Math.random()*255|0).toString(16).padStart(2,'0')} FF 20 48 00 12 99 ... CHECKSUM VALID</span>`
+			];
+			const msg = telemetryMessages[cycleNum % telemetryMessages.length];
+			appendLine(msg);
+			playSeekSound();
+		}, 750);
+	}
+
+	function onEngineReady() {
+		engineIsLoaded = true;
+		if (bootSequenceFinished) {
+			transitionToWindows95();
+		}
+	}
+
+	function onEngineError(err) {
+		transitioning = true;
+		if (telemetryTimer) clearInterval(telemetryTimer);
+		appendLine("\n<span class='dos-red'>*** SYSTEM HALTED ***</span>");
+		appendLine("<span class='dos-red'>CRITICAL FAULT: " + (err && err.message ? err.message : err) + "</span>");
+		appendLine("Press F5 to restart system.");
+		cursor.style.backgroundColor = "#ff3333";
+		playSpeaker(220, 0.4, 'sawtooth', 0.1);
+	}
+
+	// Interactive DOS typing
+	window.addEventListener('keydown', (e) => {
+		unlockAudio(e);
+		playKeyClick();
+
+		if (e.key === 'Escape') {
+			requestEarlySkip();
+			return;
+		}
+
+		if (e.key === 'Enter') {
+			const cmd = interactiveInput.trim().toUpperCase();
+			interactiveInput = "";
+			appendLine("");
+			if (cmd === 'DIR') {
+				appendLine(" Volume in drive C is LUNAR_FLIGHT");
+				appendLine(" Volume Serial Number is 1996-0221");
+				appendLine(" Directory of C:\\\n");
+				appendLine("COMMAND  COM        93,890  07-11-95   9:50a");
+				appendLine("CONFIG   SYS           248  02-21-96  10:14a");
+				appendLine("AUTOEXEC BAT           312  02-21-96  10:14a");
+				appendLine("DOS          &lt;DIR&gt;          02-21-96  10:02a");
+				appendLine("WINDOWS      &lt;DIR&gt;          02-21-96  10:05a");
+				appendLine("AVIONICS     &lt;DIR&gt;          02-21-96  10:08a");
+				appendLine("WIN      COM           420  07-11-95   9:50a");
+				appendLine("         7 file(s)        94,870 bytes");
+				appendLine("         3 dir(s)     421,888,000 bytes free\n");
+			} else if (cmd === 'VER') {
+				appendLine("MS-DOS Version 7.00 (Windows 95 release)\n");
+			} else if (cmd === 'MEM') {
+				appendLine("Memory Type        Total       Used       Free");
+				appendLine("----------------  --------   --------   --------");
+				appendLine("Conventional          640K        46K       594K");
+				appendLine("Upper                 160K        42K       118K");
+				appendLine("Extended (XMS)     51,680K     2,528K    49,152K");
+				appendLine("----------------  --------   --------   --------");
+				appendLine("Total memory       52,480K     2,616K    49,864K\n");
+			} else if (cmd === 'CLS') {
+				output.innerHTML = "";
+			} else if (cmd === 'HELP') {
+				appendLine("Supported MS-DOS Commands: DIR, VER, MEM, CLS, WIN, EXIT, HELP\n");
+			} else if (cmd === 'WIN' || cmd === 'EXIT') {
+				if (engineIsLoaded) {
+					transitionToWindows95();
+				} else {
+					appendLine("Windows 95 is still initializing flight binaries...\n");
+				}
+			} else if (cmd.length > 0) {
+				appendLine("Bad command or file name: " + cmd + "\n");
+			}
+			appendHtml("C:\\&gt; " + interactiveInput);
+			return;
+		}
+
+		if (e.key === 'Backspace') {
+			if (interactiveInput.length > 0) {
+				interactiveInput = interactiveInput.slice(0, -1);
+				output.innerHTML = output.innerHTML.slice(0, -1);
+			}
+			return;
+		}
+
+		if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+			interactiveInput += e.key;
+			appendHtml(e.key);
+		}
+	});
+
+	// Missing browser features check
 	const missing = Engine.getMissingFeatures({
 		threads: GODOT_THREADS_ENABLED,
 	});
 
 	if (missing.length !== 0) {
-		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
-			let serviceWorkerRegistrationPromise;
-			try {
-				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
-			} catch (err) {
-				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
-			}
-			// There's a chance that installing the service worker would fix the issue
-			Promise.race([
-				serviceWorkerRegistrationPromise.then((registration) => {
-					if (registration != null) {
-						return Promise.reject(new Error('Service worker already exists.'));
-					}
-					return registration;
-				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
-				new Promise((resolve) => {
-					setTimeout(() => resolve(), 2000);
-				}),
-			]).then(() => {
-				// Reload if there was no error.
-				window.location.reload();
-			}).catch((err) => {
-				console.error('Error while registering service worker:', err);
-			});
-		} else {
-			// Display the message as usual
-			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-			displayFailureNotice(missingMsg + missing.join('\n'));
-		}
-	} else {
-		setStatusMode('progress');
-		engine.startGame({
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
-				}
-			},
-		}).then(() => {
-			setStatusMode('hidden');
-		}, displayFailureNotice);
+		appendLine("\n<span class='dos-red'>*** SYSTEM HALTED ***</span>");
+		appendLine("ERROR: Required WebGL or WebAssembly extensions missing:");
+		missing.forEach(m => appendLine(" - " + m));
+		appendLine("Please update your web browser.");
+		return;
 	}
-}());
-		</script>
-	</body>
+
+	// Start Godot Engine in the background
+	engine.startGame().then(() => {
+		onEngineReady();
+	}, onEngineError);
+})();
+	</script>
+</body>
 </html>
 
