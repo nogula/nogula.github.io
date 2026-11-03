@@ -233,7 +233,7 @@
 
 	<script src="index.js"></script>
 	<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":12383860,"index.wasm":37902138},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":12562304,"index.wasm":37902138},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -307,7 +307,7 @@ let requestEarlySkip = function() {};
 
 	window.addEventListener('click', (e) => {
 		unlockAudio(e);
-	});
+	}, { capture: true });
 
 	function scrollToBottom() {
 		logBox.scrollTop = logBox.scrollHeight;
@@ -358,12 +358,15 @@ let requestEarlySkip = function() {};
 	appendLine("Extended Memory Testing :  <span id='mem-count'>1024K</span> OK");
 
 	let currentMemKb = 1024;
-	const memEl = document.getElementById('mem-count');
 
-	// Smooth memory count up to 52480K (takes ~1.2 seconds)
+	// Smooth memory count up to 52480K (takes ~0.8 seconds)
 	let memInterval = setInterval(() => {
-		if (memoryTestDone) return;
+		if (memoryTestDone) {
+			clearInterval(memInterval);
+			return;
+		}
 		currentMemKb += 2048;
+		const memEl = document.getElementById('mem-count');
 		if (currentMemKb >= 52480) {
 			currentMemKb = 52480;
 			memoryTestDone = true;
@@ -374,7 +377,7 @@ let requestEarlySkip = function() {};
 			if (memEl) memEl.textContent = currentMemKb + "K";
 			if (Math.random() < 0.25) playSeekSound();
 		}
-	}, 30);
+	}, 25);
 
 	function startBootSequence() {
 		if (dosSequenceStarted) return;
@@ -599,7 +602,7 @@ let requestEarlySkip = function() {};
 			interactiveInput += e.key;
 			appendHtml(e.key);
 		}
-	});
+	}, { capture: true });
 
 	// Missing browser features check
 	const missing = Engine.getMissingFeatures({
